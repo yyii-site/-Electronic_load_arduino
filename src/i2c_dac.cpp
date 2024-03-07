@@ -11,6 +11,10 @@ void dac_init()
 void dac_loop()
 {
   static uint16_t counter;
-  (counter < 4095) ? (counter += 500) : (counter = 0);
+  counter += 100;
+  if (counter > 4095)
+  {
+    counter = 0;
+  }
   dac.setVoltage(counter, false);
 }

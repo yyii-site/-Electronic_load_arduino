@@ -2,7 +2,9 @@
 #define __I2C_ADS_h
 
 
-void ads_init();
-void ads_loop();
+void ads_v_init();
+void ads_i_init();
+void ads_v_loop();
+void ads_i_loop();
 
 #endif

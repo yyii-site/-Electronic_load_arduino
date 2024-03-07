@@ -14,7 +14,7 @@ void onebus_init()
         Serial.println("No more addresses.");
         Serial.println();
         ds.reset_search();
-        delay(250);
+        vTaskDelay(250 / portTICK_PERIOD_MS);
         return;
     }
 
