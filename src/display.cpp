@@ -53,15 +53,15 @@ void DrawNum(u8g2_uint_t x, u8g2_uint_t y, int value)
 		u8g2.print(F("-"));
 	}
 	u8g2.setCursor(x + 10, y);
-	u8g2.print(F(u8x8_utoa(value)));
+	u8g2.print(u8x8_utoa(value));
 }
 
-void page_main(void)
+void page_main_demo(void)
 {
 	u8g2_uint_t x, y;
 	u8g2.setFontMode(1);
 
-	//CC CV CW CR
+	// CC CV CW CR
 	u8g2.setFont(u8g2_font_amstrad_cpc_extended_8u);
 	y = 8;
 	u8g2.setCursor(0, y);
@@ -75,6 +75,7 @@ void page_main(void)
 	u8g2.print(F("345.67"));
 	u8g2.setCursor(x, 32);
 	u8g2.print(F("456.78"));
+
 	x = 50;
 	u8g2.setCursor(x, 16);
 	u8g2.print(F("V"));
@@ -98,8 +99,115 @@ void page_main(void)
 	u8g2.print(F("012.45Wh"));
 	u8g2.setCursor(100, 32);
 	u8g2.print(F("F: 100%"));
+}
 
-	// DrawNum(10, 15, load.voltage);
-	// DrawNum(74, 15, load.current);
-	// DrawNum(10, 33, load.set_current);
+void Draw3Float(u8g2_uint_t x, u8g2_uint_t y, float value)
+{
+	char str_tmp[6];
+	if (value > 999.99)
+	{
+		value = 999.99;
+	}
+
+	dtostrf(value, 6, 2, str_tmp);
+	u8g2.setCursor(x, y);
+	u8g2.print(str_tmp);
+}
+
+void Draw2Float(u8g2_uint_t x, u8g2_uint_t y, float value)
+{
+	char str_tmp[5];
+	if (value > 99.99)
+	{
+		value = 99.99;
+	}
+
+	dtostrf(value, 5, 2, str_tmp);
+	u8g2.setCursor(x, y);
+	u8g2.print(str_tmp);
+}
+
+void DrawUpTime(u8g2_uint_t x, u8g2_uint_t y)
+{
+	u8g2_uint_t b = 4;
+	char str_tmp[2];
+
+	uint64_t t = millis() / 1000;
+	// 计算小时、分钟和秒
+	unsigned long hours = t / 3600;
+	unsigned long minutes = (t % 3600) / 60;
+	unsigned long seconds = (t % 3600) % 60;
+	if (hours > 99)
+	{
+		hours = 99;
+	}
+	ultoa(hours, str_tmp, 10);
+	u8g2.setCursor(x, y);
+	u8g2.print(str_tmp);
+	u8g2.setCursor(x+b*2, y);
+	u8g2.print(F(":"));
+	ultoa(minutes, str_tmp, 10);
+	u8g2.setCursor(x+b*3, y);
+	u8g2.print(str_tmp);
+	u8g2.setCursor(x+b*5, y);
+	u8g2.print(F(":"));
+	ultoa(seconds, str_tmp, 10);
+	u8g2.setCursor(x+b*6, y);
+	u8g2.print(str_tmp);
+}
+
+void DrawTemputer(u8g2_uint_t x, u8g2_uint_t y, int value)
+{
+	u8g2_uint_t b = 4;
+
+	char str_tmp[2];
+	if (value > 99)
+	{
+		value = 99;
+	}
+
+	u8g2.setCursor(x, y);
+	u8g2.print(F("T:"));
+	u8g2.setCursor(x+b*2, y);
+	ultoa(value, str_tmp, 10);
+	u8g2.print(str_tmp);
+}
+
+void page_main(void)
+{
+	u8g2_uint_t x, y;
+	u8g2.setFontMode(1);
+
+	// CC CV CW CR
+	u8g2.setFont(u8g2_font_amstrad_cpc_extended_8u);
+	y = 8;
+	u8g2.setCursor(0, y);
+	u8g2.print(F("[CC]  CV  CW  CR"));
+
+	u8g2.setFont(u8g2_font_pxplustandynewtv_8_all);
+	x = 0;
+	Draw3Float(x, 16, load.voltage);
+	Draw3Float(x, 24, load.power);
+	Draw3Float(x, 32, load.resistance);
+
+	x = 50;
+	u8g2.setCursor(x, 16);
+	u8g2.print(F("V"));
+	u8g2.setCursor(x, 24);
+	u8g2.print(F("W"));
+	u8g2.setCursor(x, 32);
+	u8g2.print(F("R"));
+
+	u8g2.setFont(u8g2_font_tenfatguys_t_all);
+	Draw2Float(64, 18, load.current);
+	u8g2.setCursor(115, 18);
+	u8g2.print(F("A"));
+
+	u8g2.setFont(u8g2_font_trixel_square_tr);
+	DrawUpTime(64, 25);
+	DrawTemputer(100, 25, temputer);
+	u8g2.setCursor(64, 32);
+	u8g2.print(F("012.45Wh"));
+	u8g2.setCursor(100, 32);
+	u8g2.print(F("F: 100%"));
 }

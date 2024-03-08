@@ -4,7 +4,7 @@
 
 void ads_v_init();
 void ads_i_init();
-void ads_v_loop();
-void ads_i_loop();
+int ads_v_loop();
+int ads_i_loop();
 
 #endif

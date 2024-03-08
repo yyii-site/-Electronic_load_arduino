@@ -18,3 +18,10 @@ void dac_loop()
   }
   dac.setVoltage(counter, false);
 }
+
+void set_dac(uint16_t val)
+{
+  if (val > 4095)
+    val = 4095;
+  dac.setVoltage(val, false);
+}

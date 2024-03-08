@@ -50,7 +50,7 @@ void onebus_init()
     }
 }
 
-void onebus_loop()
+float onebus_loop()
 {
     uint8_t i;
     uint8_t present = 0;
@@ -107,4 +107,6 @@ void onebus_loop()
     Serial.print(" Celsius, ");
     Serial.print(fahrenheit);
     Serial.println(" Fahrenheit");
+
+    return celsius;
 }

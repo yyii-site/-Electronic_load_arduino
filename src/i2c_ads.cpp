@@ -12,7 +12,7 @@ void ads_v_init()
     String testResult;
     ads_v.reset();
 
-    Serial.print(F("\nSearching for Line0... Device "));
+    Serial.print(F("\nSearching for Wire... Device "));
     testResult = (ads_v.ping() ? "Not Found\n" : " Found!\n");
     Serial.print(testResult);
 }
@@ -22,23 +22,26 @@ void ads_i_init()
     String testResult;
     ads_i.reset();
 
-    Serial.print(F("\nSearching for Line1... Device "));
+    Serial.print(F("\nSearching for Wire1... Device "));
     testResult = (ads_i.ping() ? "Not Found\n" : " Found!\n");
     Serial.print(testResult);
 }
 
-void ads_v_loop()
+int ads_v_loop()
 {
-    int currentData = ads_v.getData();
-    Serial.print(F("\nRaw Data0\t\t "));
-    Serial.print(currentData);
-    Serial.print(F("\n"));
+    int adc = ads_v.getData();
+    // Serial.print(F("\nRaw Data0\t\t "));
+    // Serial.print(adc);
+    // Serial.print(F("\n"));
+    return adc;
 }
 
-void ads_i_loop()
+int ads_i_loop()
 {
-    int currentData = ads_i.getData();
-    Serial.print(F("\nRaw Data1\t\t "));
-    Serial.print(currentData);
-    Serial.print(F("\n"));
+    int adc = ads_i.getData();
+
+    // Serial.print(F("\nRaw Data1\t\t "));
+    // Serial.print(currentData);
+    // Serial.print(F("\n"));
+    return adc;
 }

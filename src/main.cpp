@@ -5,19 +5,39 @@
 #include "display.h"
 #include "i2c_ads.h"
 #include "i2c_dac.h"
+#include "g_val.h"
 
 // ESP32-WROVER-E N4R8  C967023
+
+void calculator(void)
+{
+  load.power = load.voltage * load.current;
+  if (abs(load.current) > 0.01)
+  {
+    load.resistance = load.voltage / load.current;
+  }
+  else
+  {
+    load.resistance = 999.99;
+  }
+}
+
+uint16_t calculator_set_i(void)
+{
+  return load.set_current * load.current_sub - load.current_base;
+}
 
 void Core0task(void *args) //Wire
 {
   Serial.print("task0");
-  ads_i_init();
+  ads_v_init();
   dac_init();
   for (;;)
   {
-    ads_i_loop();
+    load.voltage = (ads_v_loop()-load.voltage_base)*load.voltage_sub;
+    calculator();
     vTaskDelay(60 / portTICK_PERIOD_MS); //60ms
-    dac_loop();
+    set_dac(4095);
     vTaskDelay(20 / portTICK_PERIOD_MS);
   }
 }
@@ -25,14 +45,15 @@ void Core0task(void *args) //Wire
 void Core1task(void *args) //Wire1
 {
   Serial.print("task1");
-  ads_v_init();
+  ads_i_init();
   oled_init();
   for (;;)
   {
+    load.current = (ads_i_loop()-load.current_base)*load.current_sub;
+    calculator();
+    vTaskDelay(20 / portTICK_PERIOD_MS);
     oled_loop();
     vTaskDelay(60 / portTICK_PERIOD_MS);
-    ads_v_loop();
-    vTaskDelay(20 / portTICK_PERIOD_MS);
   }
 }
 
@@ -42,7 +63,7 @@ void Core2task(void *args) //onebus
   onebus_init();
   for (;;)
   {
-    onebus_loop();
+    temputer = onebus_loop();
     vTaskDelay(500 / portTICK_PERIOD_MS);
   }
 }

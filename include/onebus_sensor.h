@@ -3,6 +3,6 @@
 
 
 void onebus_init();
-void onebus_loop();
+float onebus_loop();
 
 #endif
