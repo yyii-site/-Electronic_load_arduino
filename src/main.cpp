@@ -24,6 +24,11 @@ void calculator_other_status(void)
 
 uint16_t calculator_set_i(void)
 {
+  if (temperature > 80)
+  {
+    loadSet.current = 0.0;
+    return 0;
+  }
   float buf_f = (loadSet.current * loadSet.current_mul + loadSet.current_base);
   if (buf_f < 0.0)
   {
@@ -70,10 +75,9 @@ void Core1task(void *args) // Wire1
 void Core2task(void *args) // onebus
 {
   Serial.print("task2");
-  onebus_init();
   for (;;)
   {
-    temputer = onebus_loop();
+    temperature = onebus_loop();
     vTaskDelay(500 / portTICK_PERIOD_MS);
   }
 }

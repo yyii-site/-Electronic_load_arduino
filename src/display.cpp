@@ -156,11 +156,11 @@ void DrawUpTime(u8g2_uint_t x, u8g2_uint_t y)
 	u8g2.print(str_tmp);
 }
 
-void DrawTemputer(u8g2_uint_t x, u8g2_uint_t y, int value)
+void DrawTemperature(u8g2_uint_t x, u8g2_uint_t y, float value)
 {
 	u8g2_uint_t b = 4;
 
-	char str_tmp[3];
+	char str_tmp[7];
 	if (value > 99)
 	{
 		value = 99;
@@ -169,7 +169,9 @@ void DrawTemputer(u8g2_uint_t x, u8g2_uint_t y, int value)
 	u8g2.setCursor(x, y);
 	u8g2.print(F("T:"));
 	u8g2.setCursor(x + b * 2, y);
-	ultoa(value, str_tmp, 10);
+	dtostrf(value, 5, 1, str_tmp);
+	str_tmp[5] = 'C';
+	str_tmp[6] = 0;
 	u8g2.print(str_tmp);
 }
 
@@ -246,6 +248,19 @@ void DrawSetCurrent(u8g2_uint_t x, u8g2_uint_t y, float value)
 	u8g2.print(str_tmp);
 }
 
+void DrawSetFan(u8g2_uint_t x, u8g2_uint_t y, int value)
+{
+	char str_tmp[4];
+
+	ltoa(value, str_tmp, 10);
+	u8g2.setCursor(x, y);
+	u8g2.print(F("F: "));
+	u8g2.setCursor(x+12, y);
+	u8g2.print(str_tmp);
+	u8g2.setCursor(x+24, y);
+	u8g2.print(F("%"));
+}
+
 void page_main(void)
 {
 	u8g2_uint_t x, y;
@@ -278,9 +293,9 @@ void page_main(void)
 
 	u8g2.setFont(u8g2_font_trixel_square_tr);
 	DrawUpTime(64, 25);
-	DrawTemputer(100, 25, temputer);
+	DrawTemperature(100, 25, temperature);
+	
 	u8g2.setCursor(64, 32);
-	u8g2.print(F("012.45Wh"));
-	u8g2.setCursor(100, 32);
-	u8g2.print(F("F: 100%"));
+	u8g2.print(F("012.45Wh"));	
+	DrawSetFan(100, 32, loadSet.fan_duty);
 }

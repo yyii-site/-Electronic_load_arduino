@@ -1,6 +1,6 @@
 #include "g_val.h"
 
-int temputer;
+float temperature;
 
 LoadStatusTypeDef loadStatus = {
     0.0,
@@ -16,9 +16,10 @@ LoadStatusTypeDef loadStatus = {
 
 LoadSetTypeDef loadSet = {
     0.0,
-    0.01,
+    353.5,
     0,
-    -1};
+    -1,
+    0};
 
 /*
 Step1:

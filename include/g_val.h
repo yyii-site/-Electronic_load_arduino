@@ -23,9 +23,11 @@ typedef struct
     int current_base;
 
     int change_bit; // 2 = x10   1 = x1   0 = x1  -1 = x0.1   -2 = x0.01
+
+    int fan_duty;
 } LoadSetTypeDef;
 extern LoadSetTypeDef loadSet;
 
-extern int temputer;
+extern float temperature;
 
 #endif
