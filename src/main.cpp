@@ -9,55 +9,65 @@
 
 // ESP32-WROVER-E N4R8  C967023
 
-void calculator(void)
+void calculator_other_status(void)
 {
-  load.power = load.voltage * load.current;
-  if (abs(load.current) > 0.01)
+  loadStatus.power = loadStatus.voltage * loadStatus.current;
+  if (abs(loadStatus.current) > 0.01)
   {
-    load.resistance = load.voltage / load.current;
+    loadStatus.resistance = loadStatus.voltage / loadStatus.current;
   }
   else
   {
-    load.resistance = 999.99;
+    loadStatus.resistance = 999.99;
   }
 }
 
 uint16_t calculator_set_i(void)
 {
-  return load.set_current * load.current_sub - load.current_base;
+  float buf_f = (loadSet.current * loadSet.current_mul + loadSet.current_base);
+  if (buf_f < 0.0)
+  {
+    return 0;
+  }
+  else if (buf_f > 4095){
+    return 4095;
+  }
+  else {
+    return static_cast<uint16_t>(buf_f);
+  }
 }
 
-void Core0task(void *args) //Wire
+void Core0task(void *args) // Wire
 {
   Serial.print("task0");
   ads_v_init();
   dac_init();
   for (;;)
   {
-    load.voltage = (ads_v_loop()-load.voltage_base)*load.voltage_sub;
-    calculator();
-    vTaskDelay(60 / portTICK_PERIOD_MS); //60ms
-    set_dac(4095);
+    loadStatus.voltage = (ads_v_loop() - loadStatus.voltage_base) * loadStatus.voltage_mul;
+    calculator_other_status();
+    vTaskDelay(60 / portTICK_PERIOD_MS); // 60ms
+    set_dac(calculator_set_i());
     vTaskDelay(20 / portTICK_PERIOD_MS);
   }
 }
 
-void Core1task(void *args) //Wire1
+void Core1task(void *args) // Wire1
 {
   Serial.print("task1");
   ads_i_init();
   oled_init();
   for (;;)
   {
-    load.current = (ads_i_loop()-load.current_base)*load.current_sub;
-    calculator();
+    loadStatus.current = (ads_i_loop() - loadStatus.current_base) * loadStatus.current_mul;
+    calculator_other_status();
     vTaskDelay(20 / portTICK_PERIOD_MS);
     oled_loop();
     vTaskDelay(60 / portTICK_PERIOD_MS);
   }
 }
 
-void Core2task(void *args) //onebus
+void Core2task(void *args) // onebus
 {
   Serial.print("task2");
   onebus_init();
@@ -83,6 +93,6 @@ void setup()
 
 void loop()
 {
-  enc_get_key_pressed();
+  gpio_loop();
   vTaskDelay(10 / portTICK_PERIOD_MS);
 }

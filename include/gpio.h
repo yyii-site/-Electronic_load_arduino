@@ -6,7 +6,7 @@
 extern int16_t encoder;
 
 void gpio_init(void);
-bool enc_get_key_pressed();
+void gpio_loop(void);
 int16_t enc_get_new_moves();
 
 
